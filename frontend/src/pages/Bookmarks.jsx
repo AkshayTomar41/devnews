@@ -3,50 +3,61 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import StoryCard from '../components/StoryCard';
+import StorySkeleton from '../components/StorySkeleton';
 
 const Bookmarks = () => {
   const [bookmarkedStories, setBookmarkedStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useContext(AuthContext);
+  const { user, updateBookmarks } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
+    if (!user) { navigate('/login'); return; }
     const fetchBookmarks = async () => {
       try {
         setLoading(true);
-        // We can fetch all stories and filter by user bookmarks, or create an endpoint for it.
-        // Let's just fetch all and filter since it's a mini app, or better yet, fetch all stories and filter.
-        const { data } = await axios.get('http://localhost:5000/api/stories?limit=1000');
-        const filtered = data.stories.filter(story => user.bookmarks.includes(story._id));
+        const { data } = await axios.get('http://localhost:5000/api/stories?limit=500');
+        const ids = user.bookmarks?.map(id => id?.toString?.() || id) || [];
+        const filtered = data.stories.filter(s => ids.includes(s._id?.toString()));
         setBookmarkedStories(filtered);
-      } catch (error) {
-        console.error('Error fetching bookmarks:', error);
+      } catch {
+        /* ignore */
       } finally {
         setLoading(false);
       }
     };
-
     fetchBookmarks();
   }, [user, navigate]);
 
+  // Re-filter when user.bookmarks changes (after toggle)
+  const ids = user?.bookmarks?.map(id => id?.toString?.() || id) || [];
+  const visible = bookmarkedStories.filter(s => ids.includes(s._id?.toString()));
+
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Your Bookmarks</h2>
+    <div className="container" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
+      <div className="page-header">
+        <h2 className="page-title">My Bookmarks</h2>
+        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+          {visible.length} saved
+        </span>
+      </div>
+
       {loading ? (
-        <div className="loader"></div>
-      ) : bookmarkedStories.length === 0 ? (
-        <div className="text-center text-secondary mt-4">
-          <p>You haven't bookmarked any stories yet.</p>
+        <StorySkeleton count={4} />
+      ) : visible.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">🔖</div>
+          <h3>No bookmarks yet</h3>
+          <p>Click the bookmark icon on any story to save it here.</p>
         </div>
       ) : (
-        bookmarkedStories.map(story => (
-          <StoryCard key={story._id} story={story} />
-        ))
+        <div className="stories-list">
+          {visible.map((story, i) => (
+            <div key={story._id} style={{ animationDelay: `${i * 0.05}s` }}>
+              <StoryCard story={story} />
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
