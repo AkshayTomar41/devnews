@@ -1,21 +1,41 @@
 const Story = require('../models/Story');
 const User = require('../models/User');
 
-// @desc    Fetch all stories (sorted by points descending, with pagination)
-// @route   GET /api/stories
+// @desc    Fetch all stories (sorted, paginated, filterable)
+// @route   GET /api/stories?page=1&limit=10&sort=points&q=search
 // @access  Public
 const getStories = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const sort = req.query.sort || 'points';
+    const q = req.query.q || '';
+    const type = req.query.type || '';
 
-    const stories = await Story.find()
-      .sort({ points: -1 })
+    const query = {};
+    if (q) {
+      query.$or = [
+        { title: { $regex: q, $options: 'i' } },
+        { author: { $regex: q, $options: 'i' } }
+      ];
+    }
+    if (type && type !== 'all') {
+      query.type = type;
+    }
+
+    const sortOptions = {
+      points: { points: -1 },
+      newest: { createdAt: -1 },
+      comments: { commentCount: -1 }
+    };
+
+    const stories = await Story.find(query)
+      .sort(sortOptions[sort] || { points: -1 })
       .skip(skip)
       .limit(limit);
-      
-    const total = await Story.countDocuments();
+
+    const total = await Story.countDocuments(query);
 
     res.json({
       stories,
@@ -56,26 +76,64 @@ const toggleBookmark = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const isBookmarked = user.bookmarks.includes(storyId);
+    const isBookmarked = user.bookmarks.map(id => id.toString()).includes(storyId.toString());
 
     if (isBookmarked) {
-      // Remove bookmark
       user.bookmarks = user.bookmarks.filter(
         (id) => id.toString() !== storyId.toString()
       );
     } else {
-      // Add bookmark
       user.bookmarks.push(storyId);
     }
 
     await user.save();
-    
-    // Return updated bookmarks
-    // We populate to optionally send back story details, but IDs are usually enough
-    // Let's populate so the frontend has the latest list of bookmarked stories
-    const updatedUser = await User.findById(req.user._id).populate('bookmarks');
+    res.json({ bookmarkedIds: user.bookmarks, isBookmarked: !isBookmarked });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-    res.json({ bookmarks: updatedUser.bookmarks, bookmarkedIds: user.bookmarks });
+// @desc    Toggle vote on a story
+// @route   POST /api/stories/:id/vote
+// @access  Private
+const toggleVote = async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+
+    const userId = req.user._id.toString();
+    const hasVoted = story.votes.map(id => id.toString()).includes(userId);
+
+    if (hasVoted) {
+      story.votes = story.votes.filter(id => id.toString() !== userId);
+      story.points = Math.max(0, story.points - 1);
+    } else {
+      story.votes.push(req.user._id);
+      story.points += 1;
+    }
+
+    await story.save();
+    res.json({ points: story.points, voted: !hasVoted });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get site-wide stats
+// @route   GET /api/stories/stats
+// @access  Public
+const getSiteStats = async (req, res) => {
+  try {
+    const storyCount = await Story.countDocuments();
+    const topStory = await Story.findOne().sort({ points: -1 });
+    const User = require('../models/User');
+    const userCount = await User.countDocuments();
+    const Comment = require('../models/Comment');
+    const commentCount = await Comment.countDocuments();
+
+    res.json({ storyCount, userCount, commentCount, topStory });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -85,4 +143,6 @@ module.exports = {
   getStories,
   getStoryById,
   toggleBookmark,
+  toggleVote,
+  getSiteStats
 };

@@ -26,8 +26,26 @@ const storySchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
+  },
+  votes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  commentCount: {
+    type: Number,
+    default: 0
+  },
+  domain: {
+    type: String,
+    default: ''
+  },
+  type: {
+    type: String,
+    enum: ['story', 'ask', 'show', 'job'],
+    default: 'story'
   }
 }, { timestamps: true });
 
 const Story = mongoose.model('Story', storySchema);
 module.exports = Story;
+

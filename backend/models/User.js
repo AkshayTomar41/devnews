@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  bio: {
+    type: String,
+    default: ''
+  },
+  avatarColor: {
+    type: String,
+    default: '#3b82f6'
+  },
   bookmarks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Story'
