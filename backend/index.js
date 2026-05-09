@@ -21,6 +21,7 @@ const limiter = rateLimit({
   max: 100,
   message: { message: 'Too many requests, please try again later.' }
 });
+
 app.use('/api/', limiter);
 
 // Routes
@@ -29,11 +30,20 @@ app.use('/api/stories', require('./routes/storyRoutes'));
 app.use('/api/scrape', require('./routes/scrapeRoutes'));
 app.use('/api/comments', require('./routes/commentRoutes'));
 
+// Root route
+app.get("/", (req, res) => {
+  res.send("DevNews API is running...");
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
+
   const status = err.status || 500;
-  res.status(status).json({ message: err.message || 'Internal Server Error' });
+
+  res.status(status).json({
+    message: err.message || 'Internal Server Error'
+  });
 });
 
 const PORT = process.env.PORT || 5000;
@@ -43,15 +53,16 @@ app.listen(PORT, async () => {
 
   // Auto-scrape on startup
   try {
-    console.log('🕷️  Running initial scrape...');
+    console.log('🕷️ Running initial scrape...');
     await scrapeHackerNews();
   } catch (error) {
     console.error('❌ Initial scrape failed:', error.message);
   }
 
-  // Cron: auto-scrape every hour
+  // Cron job: scrape every hour
   cron.schedule('0 * * * *', async () => {
     console.log('⏰ Cron: running scheduled scrape...');
+
     try {
       await scrapeHackerNews();
     } catch (error) {
