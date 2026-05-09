@@ -35,11 +35,14 @@ const Bookmarks = () => {
 
   return (
     <div className="container" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
-      <div className="page-header">
-        <h2 className="page-title">My Bookmarks</h2>
-        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-          {visible.length} saved
-        </span>
+      <div className="page-header" style={{ marginBottom: '2.5rem' }}>
+        <div>
+          <h1 style={{ fontSize: '2.5rem', letterSpacing: '-0.04em', marginBottom: '0.25rem' }}>Saved Library</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>Your personal collection of curated tech news</p>
+        </div>
+        <div style={{ background: 'var(--surface-color)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-color)', fontWeight: 600 }}>
+          {visible.length} stories
+        </div>
       </div>
 
       {loading ? (

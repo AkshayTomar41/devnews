@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  fullName: {
+    type: String,
+    default: ''
+  },
   password: {
     type: String,
     required: true
@@ -19,16 +23,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '#3b82f6'
   },
-  bookmarks: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Story'
-  }]
+  bookmarks: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Story',
+    default: []
+  }
 }, { timestamps: true });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function() {
   if (!this.isModified('password')) {
-    next();
+    return;
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

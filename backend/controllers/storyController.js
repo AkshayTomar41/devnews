@@ -44,6 +44,7 @@ const getStories = async (req, res) => {
       total
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -60,6 +61,7 @@ const getStoryById = async (req, res) => {
       res.status(404).json({ message: 'Story not found' });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -71,16 +73,21 @@ const toggleBookmark = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     const storyId = req.params.id;
+    console.log(`Toggling bookmark for user ${user?.username} and story ${storyId}`);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const isBookmarked = user.bookmarks.map(id => id.toString()).includes(storyId.toString());
+    if (!user.bookmarks) {
+      user.bookmarks = [];
+    }
+
+    const isBookmarked = user.bookmarks.some(id => id && id.toString() === storyId.toString());
 
     if (isBookmarked) {
       user.bookmarks = user.bookmarks.filter(
-        (id) => id.toString() !== storyId.toString()
+        (id) => id && id.toString() !== storyId.toString()
       );
     } else {
       user.bookmarks.push(storyId);
@@ -89,6 +96,7 @@ const toggleBookmark = async (req, res) => {
     await user.save();
     res.json({ bookmarkedIds: user.bookmarks, isBookmarked: !isBookmarked });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -117,6 +125,7 @@ const toggleVote = async (req, res) => {
     await story.save();
     res.json({ points: story.points, voted: !hasVoted });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };

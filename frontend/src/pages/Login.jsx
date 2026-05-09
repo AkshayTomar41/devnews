@@ -43,8 +43,8 @@ const Login = () => {
         {error && <div className="error-text text-center mb-4">{error}</div>}
         <form onSubmit={submitHandler}>
           <div className="form-group">
-            <label className="form-label">Username</label>
-            <input type="text" className="form-input" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} required autoFocus />
+            <label className="form-label">Gmail / Email</label>
+            <input type="text" className="form-input" placeholder="e.g. john@gmail.com" value={username} onChange={e => setUsername(e.target.value)} required autoFocus />
           </div>
           <div className="form-group" style={{ position: 'relative' }}>
             <label className="form-label">Password</label>

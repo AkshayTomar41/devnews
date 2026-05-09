@@ -92,30 +92,48 @@ const StoryDetail = () => {
   if (!story) return null;
 
   return (
-    <div className="container" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        <ArrowLeft size={16} /> Back to stories
+    <div className="container" style={{ paddingTop: '2.5rem', paddingBottom: '5rem', maxWidth: '900px' }}>
+      <button className="back-btn" onClick={() => navigate(-1)} style={{ marginBottom: '1.5rem', fontWeight: 600 }}>
+        <ArrowLeft size={18} /> Back to stories
       </button>
 
-      {/* Story detail */}
-      <div className="story-detail">
-        <h1 className="story-detail-title">{story.title}</h1>
-        <div className="story-detail-meta">
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <ArrowUp size={14} color="var(--accent-color)" /> {story.points} points
-          </span>
-          <span>by <strong>{story.author}</strong></span>
-          <span>{story.postedAt}</span>
-          {story.domain && <span style={{ color: 'var(--text-muted)' }}>via {story.domain}</span>}
+      {/* Story detail hero section */}
+      <div className="story-detail-container" style={{ padding: '3.5rem', marginBottom: '3rem' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
+          {story.type && (
+            <span className={`story-type-badge badge-${story.type}`} style={{ marginBottom: '1rem', fontSize: '0.8rem', padding: '0.35rem 1rem' }}>
+              {story.type.toUpperCase()}
+            </span>
+          )}
+          <h1 style={{ fontSize: '3rem', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+            {story.title}
+          </h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <a href={story.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
-            <ExternalLink size={13} /> Open Story
+        <div className="story-detail-meta" style={{ marginBottom: '2.5rem', fontSize: '1rem' }}>
+          <div className="stat-chip" style={{ background: 'var(--primary-glow)', color: 'var(--primary-color)', border: 'none' }}>
+            <ArrowUp size={16} strokeWidth={3} /> <strong>{story.points} Points</strong>
+          </div>
+          <div className="stat-chip">
+            by <strong style={{ color: 'var(--text-primary)' }}>{story.author}</strong>
+          </div>
+          <div className="stat-chip">
+            {story.postedAt}
+          </div>
+          {story.domain && (
+            <div className="stat-chip" style={{ color: 'var(--text-muted)' }}>
+              via {story.domain}
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <a href={story.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ padding: '0.75rem 2rem', borderRadius: 'var(--radius-md)' }}>
+            <ExternalLink size={18} /> Open Source Material
           </a>
-          <span className="btn btn-outline btn-sm" style={{ pointerEvents: 'none' }}>
-            <MessageCircle size={13} /> {story.commentCount || 0} Comments
-          </span>
+          <div className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', borderRadius: 'var(--radius-md)', cursor: 'default' }}>
+            <MessageCircle size={18} /> {story.commentCount || 0} Discussions
+          </div>
         </div>
       </div>
 

@@ -1,62 +1,221 @@
-# HackerNews Clone
+# 🚀 DevNews - MERN HackerNews Scraper
 
-A mini full-stack MERN application that scrapes the top 10 stories from HackerNews, saves them to a database, and allows users to register, login, and bookmark their favorite stories.
+DevNews is a full-stack MERN application that scrapes top stories from HackerNews and allows authenticated users to bookmark stories.
 
-## Features
+The project demonstrates:
 
-- **Web Scraper**: Scrapes top 10 stories from HackerNews (Title, URL, Points, Author, Posted Time).
-- **Backend API**: Node.js & Express REST APIs with JWT authentication.
-- **Frontend**: React application built with Vite, featuring a modern, dark-mode, responsive UI.
-- **Bookmarks**: Authenticated users can bookmark and unbookmark stories.
-- **Pagination**: Browse stories using pagination.
+* Web scraping using Cheerio
+* JWT authentication
+* REST API development
+* MongoDB integration
+* React frontend with Context API
+* Full-stack deployment
 
-## Tech Stack
+---
 
-- **MongoDB** (Mongoose)
-- **Express.js**
-- **React.js** (Context API, React Router, Vite)
-- **Node.js**
-- **Axios & Cheerio** (for scraping)
+# ✨ Features
 
-## Environment Variables
+## 🕵️ Web Scraper
 
-Create a `.env` file in the `backend/` directory with the following variables:
+* Scrapes top 10 stories from HackerNews
+* Extracts:
+
+  * Title
+  * URL
+  * Points
+  * Author
+  * Posted Time
+* Stores scraped data in MongoDB
+* Automatically runs on server startup
+* Can also be triggered manually via API
+
+## 🔐 Authentication
+
+* User registration
+* User login
+* JWT-based authentication
+* Protected routes
+
+## 📰 Stories
+
+* Fetch all stories
+* Fetch single story
+* Bookmark/unbookmark stories
+* Protected bookmarks page
+
+## 💻 Frontend
+
+* React + Vite
+* Context API for authentication state
+* Responsive UI
+* Bookmark persistence
+* Clean and modern interface
+
+---
+
+# 🛠️ Tech Stack
+
+## Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT
+* Cheerio
+* Axios
+
+## Frontend
+
+* React.js
+* Vite
+* React Router DOM
+* Context API
+* Axios
+
+---
+
+# 📁 Folder Structure
+
+```bash
+backend/
+├── controllers/
+├── middleware/
+├── models/
+├── routes/
+├── scraper/
+├── utils/
+├── server.js
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── context/
+│   ├── pages/
+│   ├── services/
+│   ├── App.jsx
+│   └── main.jsx
+```
+
+---
+
+# ⚙️ Environment Variables
+
+Create a `.env` file inside the `backend` folder:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://127.0.0.1:27017/hackernews_clone
-JWT_SECRET=supersecretkey_hacker_news_clone_12345
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+CLIENT_URL=http://localhost:5173
 ```
 
-## Setup Instructions
+---
 
-### 1. Start MongoDB
-Ensure that MongoDB is running locally on `127.0.0.1:27017`.
+# 🚀 Installation & Setup
 
-### 2. Setup Backend
-1. Navigate to the `backend` directory: `cd backend`
-2. Install dependencies: `npm install`
-3. Start the server: `npm start` (or `node index.js`)
-*Note: The server will automatically scrape HackerNews on startup.*
+## 1. Clone the Repository
 
-### 3. Setup Frontend
-1. Navigate to the `frontend` directory: `cd frontend`
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
+```bash
+git clone <your-repository-url>
+cd devnews
+```
 
-### 4. Open in Browser
-Visit `http://localhost:5173` to view the application.
+---
 
-## API Documentation
+## 2. Backend Setup
 
-### Auth
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
+```bash
+cd backend
+npm install
+npm run dev
+```
 
-### Stories
-- `GET /api/stories?page=1&limit=10` - Get paginated stories
-- `GET /api/stories/:id` - Get a single story
-- `POST /api/stories/:id/bookmark` - Toggle bookmark (Auth required)
+Backend will run on:
 
-### Scraper
-- `POST /api/scrape` - Manually trigger the scraper
+```bash
+http://localhost:5000
+```
+
+---
+
+## 3. Frontend Setup
+
+Open a new terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend will run on:
+
+```bash
+http://localhost:5173
+```
+
+---
+
+# 📡 API Endpoints
+
+## 🔐 Authentication Routes
+
+| Method | Endpoint             | Description         |
+| ------ | -------------------- | ------------------- |
+| POST   | `/api/auth/register` | Register a new user |
+| POST   | `/api/auth/login`    | Login user          |
+
+---
+
+## 📰 Story Routes
+
+| Method | Endpoint                    | Description        |
+| ------ | --------------------------- | ------------------ |
+| GET    | `/api/stories`              | Fetch all stories  |
+| GET    | `/api/stories/:id`          | Fetch single story |
+| POST   | `/api/stories/:id/bookmark` | Toggle bookmark    |
+
+---
+
+## 🕵️ Scraper Route
+
+| Method | Endpoint      | Description              |
+| ------ | ------------- | ------------------------ |
+| POST   | `/api/scrape` | Trigger scraper manually |
+
+---
+
+# 🔖 Bookmark Feature
+
+Authenticated users can:
+
+* Bookmark stories
+* Remove bookmarks
+* Access bookmarked stories from protected page
+
+Bookmarks are stored in MongoDB and persist across sessions.
+
+---
+
+# 🌐 Deployment
+
+## Frontend
+
+Deployed on Vercel
+
+## Backend
+
+Deployed on Render / Railway
+
+## Database
+
+MongoDB Atlas
+
+---
+
+# 👨‍💻 Author
+
+Akshay Tomer
+
+

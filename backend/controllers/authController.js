@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, fullName } = req.body;
 
     const userExists = await User.findOne({ username });
 
@@ -23,12 +23,14 @@ const registerUser = async (req, res) => {
     const user = await User.create({
       username,
       password,
+      fullName: fullName || '',
     });
 
     if (user) {
       res.status(201).json({
         _id: user._id,
         username: user.username,
+        fullName: user.fullName,
         bookmarks: user.bookmarks,
         token: generateToken(user._id),
       });
@@ -53,6 +55,7 @@ const loginUser = async (req, res) => {
       res.json({
         _id: user._id,
         username: user.username,
+        fullName: user.fullName,
         bookmarks: user.bookmarks,
         token: generateToken(user._id),
       });

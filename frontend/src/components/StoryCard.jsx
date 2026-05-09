@@ -65,56 +65,82 @@ const StoryCard = ({ story, onVoteUpdate }) => {
   return (
     <div className="story-card">
       <div className="story-card-header">
-        {/* Vote button */}
-        <button
-          className={`vote-btn ${voted ? 'voted' : ''}`}
-          onClick={handleVote}
-          disabled={voteLoading}
-          title={voted ? 'Remove vote' : 'Upvote'}
-        >
-          <ArrowUp size={14} />
-          <span>{localPoints}</span>
-        </button>
+        {/* Left Side: Vote Section */}
+        <div className="vote-section">
+          <button
+            className={`vote-btn ${voted ? 'voted' : ''}`}
+            onClick={handleVote}
+            disabled={voteLoading}
+            title={voted ? 'Remove vote' : 'Upvote'}
+          >
+            <ArrowUp size={18} strokeWidth={3} />
+          </button>
+          <span className="vote-count">{localPoints}</span>
+        </div>
 
-        {/* Main content */}
-        <div className="story-card-main">
-          {story.type && story.type !== 'story' && (
-            <span className={badgeClass}>{TYPE_LABELS[story.type]}</span>
-          )}
+        {/* Middle: Content Section */}
+        <div className="story-content">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+            {story.type && (
+              <span className={badgeClass}>{TYPE_LABELS[story.type]}</span>
+            )}
+            {story.domain && (
+              <span className="story-domain" style={{ margin: 0 }}>
+                {story.domain}
+              </span>
+            )}
+          </div>
+          
           <a href={story.url} target="_blank" rel="noopener noreferrer" className="story-title">
             {story.title}
           </a>
-          {story.domain && (
-            <div className="story-domain">
-              <ExternalLink size={11} style={{ verticalAlign: 'middle' }} /> {story.domain}
-            </div>
-          )}
+
           <div className="story-meta">
-            <span className="story-meta-item">by <strong>{story.author}</strong></span>
-            <span className="story-meta-item">{story.postedAt?.split(' ')[0] || ''}</span>
+            <span className="meta-item">
+              by <strong style={{ color: 'var(--text-primary)' }}>{story.author}</strong>
+            </span>
+            <span className="meta-item">
+              {story.postedAt?.split(' ')[0] || ''}
+            </span>
+            <Link to={`/story/${story._id}`} className="meta-item" style={{ color: 'var(--primary-color)', fontWeight: 600 }}>
+              <MessageCircle size={14} />
+              {story.commentCount || 0}
+            </Link>
           </div>
         </div>
 
-        {/* Bookmark button */}
-        <button
-          className={`bookmark-btn ${isBookmarked ? 'active' : ''}`}
-          onClick={handleBookmark}
-          disabled={bookmarkLoading}
-          title={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-        >
-          <Bookmark size={20} fill={isBookmarked ? 'var(--accent-color)' : 'none'} />
-        </button>
+        {/* Right Side: Action Section */}
+        <div className="story-card-actions-top">
+          <button
+            className={`btn-icon ${isBookmarked ? 'active' : ''}`}
+            onClick={handleBookmark}
+            disabled={bookmarkLoading}
+            title={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+            style={{ border: 'none', color: isBookmarked ? 'var(--accent-color)' : 'var(--text-muted)' }}
+          >
+            <Bookmark size={20} fill={isBookmarked ? 'var(--accent-color)' : 'none'} />
+          </button>
+        </div>
       </div>
 
-      {/* Footer */}
-      <div className="story-card-footer">
-        <Link to={`/story/${story._id}`} className="story-comment-link">
-          <MessageCircle size={14} />
-          {story.commentCount || 0} comment{story.commentCount !== 1 ? 's' : ''}
-        </Link>
-        <a href={story.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-          <ExternalLink size={12} /> Open story
+      {/* Footer Actions */}
+      <div className="story-card-actions">
+        <a 
+          href={story.url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="btn btn-outline btn-sm"
+          style={{ fontSize: '0.75rem', padding: '0.3rem 0.75rem' }}
+        >
+          <ExternalLink size={12} /> View Source
         </a>
+        <Link 
+          to={`/story/${story._id}`} 
+          className="btn btn-primary btn-sm"
+          style={{ fontSize: '0.75rem', padding: '0.3rem 0.75rem' }}
+        >
+          Discuss
+        </Link>
       </div>
     </div>
   );

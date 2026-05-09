@@ -21,7 +21,7 @@ const scrapeHackerNews = async () => {
   try {
     const { data } = await axios.get('https://news.ycombinator.com', {
       headers: { 'User-Agent': 'Mozilla/5.0 HackerNewsClone/1.0' },
-      timeout: 10000
+      timeout: 20000
     });
     const $ = cheerio.load(data);
     const stories = [];
@@ -43,10 +43,10 @@ const scrapeHackerNews = async () => {
       const pointsText = subtext.find('.score').text();
       const points = pointsText ? parseInt(pointsText.replace(' points', '')) || 0 : 0;
       const author = subtext.find('.hnuser').text() || 'anonymous';
-      const postedAt = subtext.find('.age').attr('title') || subtext.find('.age').text() || '';
+      const postedAt = subtext.find('.age').attr('title') || subtext.find('.age').text() || 'just now';
 
       stories.push({
-        title,
+        title: title || 'Untitled Story',
         url,
         points,
         author,

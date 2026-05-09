@@ -16,11 +16,11 @@ const storySchema = new mongoose.Schema({
   },
   author: {
     type: String,
-    required: true
+    default: 'anonymous'
   },
   postedAt: {
     type: String,
-    required: true
+    default: 'just now'
   },
   hnId: {
     type: String,

@@ -21,17 +21,19 @@ const getProfile = async (req, res) => {
 // @access  Private
 const updateProfile = async (req, res) => {
   try {
-    const { bio, avatarColor } = req.body;
+    const { bio, avatarColor, fullName } = req.body;
     const user = await User.findById(req.user._id);
 
     if (bio !== undefined) user.bio = bio;
     if (avatarColor !== undefined) user.avatarColor = avatarColor;
+    if (fullName !== undefined) user.fullName = fullName;
 
     await user.save();
     
     res.json({
       _id: user._id,
       username: user.username,
+      fullName: user.fullName,
       bio: user.bio,
       avatarColor: user.avatarColor,
       bookmarks: user.bookmarks

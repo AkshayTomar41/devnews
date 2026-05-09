@@ -6,6 +6,7 @@ import { ToastContext } from '../context/ToastContext';
 import { Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 
 const Register = () => {
+  const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,9 +29,13 @@ const Register = () => {
     try {
       setLoading(true);
       setError('');
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { username, password });
+      const { data } = await axios.post('http://localhost:5000/api/auth/register', { 
+        fullName, 
+        username, 
+        password 
+      });
       login(data);
-      addToast(`🎉 Welcome, ${data.username}!`, 'success');
+      addToast(`🎉 Welcome to the community, ${data.fullName || data.username}!`, 'success');
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.message || 'Registration failed';
@@ -42,41 +47,86 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
-      <div className="auth-card">
-        <h2 className="text-center">Create Account</h2>
-        <p className="auth-subtitle text-center">Join the HackerNews community</p>
+    <div className="container" style={{ paddingBottom: '5rem' }}>
+      <div className="auth-card" style={{ maxWidth: '500px' }}>
+        <h2 className="text-center">Join DevNews</h2>
+        <p className="auth-subtitle text-center">Create your account to save stories and join discussions</p>
+        
         {error && <div className="error-text text-center mb-4">{error}</div>}
+        
         <form onSubmit={submitHandler}>
           <div className="form-group">
-            <label className="form-label">Username</label>
-            <input type="text" className="form-input" placeholder="Choose a username" value={username} onChange={e => setUsername(e.target.value)} required autoFocus />
+            <label className="form-label">Full Name</label>
+            <input 
+              type="text" 
+              className="form-input" 
+              placeholder="e.g. John Doe" 
+              value={fullName} 
+              onChange={e => setFullName(e.target.value)} 
+              required 
+              autoFocus 
+            />
           </div>
+
+          <div className="form-group">
+            <label className="form-label">Gmail / Email</label>
+            <input 
+              type="email" 
+              className="form-input" 
+              placeholder="e.g. john@gmail.com" 
+              value={username} 
+              onChange={e => setUsername(e.target.value)} 
+              required 
+            />
+          </div>
+
           <div className="form-group" style={{ position: 'relative' }}>
             <label className="form-label">Password</label>
-            <input type={showPw ? 'text' : 'password'} className="form-input" placeholder="Create a password" value={password} onChange={e => setPassword(e.target.value)} required style={{ paddingRight: '2.75rem' }} />
-            <button type="button" onClick={() => setShowPw(!showPw)} style={{ position: 'absolute', right: '0.75rem', top: '2.25rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0 }}>
+            <input 
+              type={showPw ? 'text' : 'password'} 
+              className="form-input" 
+              placeholder="Create a strong password" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              required 
+              style={{ paddingRight: '2.75rem' }} 
+            />
+            <button 
+              type="button" 
+              onClick={() => setShowPw(!showPw)} 
+              style={{ position: 'absolute', right: '0.75rem', top: '2.25rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0 }}
+            >
               {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
+            
             {pwStrength && (
-              <div style={{ marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'var(--border-color)' }}>
-                  <div style={{ height: '100%', borderRadius: 2, background: pwColors[pwStrength], width: pwStrength === 'weak' ? '33%' : pwStrength === 'medium' ? '66%' : '100%', transition: 'width 0.3s, background 0.3s' }} />
+                  <div style={{ height: '100%', borderRadius: 2, background: pwColors[pwStrength], width: pwStrength === 'weak' ? '33%' : pwStrength === 'medium' ? '66%' : '100%', transition: 'all 0.3s' }} />
                 </div>
-                <span style={{ fontSize: '0.75rem', color: pwColors[pwStrength], fontWeight: 600, textTransform: 'capitalize' }}>{pwStrength}</span>
+                <span style={{ fontSize: '0.75rem', color: pwColors[pwStrength], fontWeight: 700, textTransform: 'capitalize' }}>{pwStrength}</span>
               </div>
             )}
           </div>
+
           <div className="form-group" style={{ position: 'relative' }}>
             <label className="form-label">Confirm Password</label>
-            <input type="password" className="form-input" placeholder="Confirm your password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required style={{ paddingRight: '2.75rem' }} />
+            <input 
+              type="password" 
+              className="form-input" 
+              placeholder="Confirm your password" 
+              value={confirmPassword} 
+              onChange={e => setConfirmPassword(e.target.value)} 
+              required 
+            />
             {confirmPassword && (
               <span style={{ position: 'absolute', right: '0.75rem', top: '2.25rem', color: password === confirmPassword ? 'var(--success-color)' : 'var(--danger-color)' }}>
-                {password === confirmPassword ? <CheckCircle size={16} /> : <XCircle size={16} />}
+                {password === confirmPassword ? <CheckCircle size={18} /> : <XCircle size={18} />}
               </span>
             )}
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={loading}>
+
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.875rem', marginTop: '1rem' }} disabled={loading}>
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>

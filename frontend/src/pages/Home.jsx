@@ -88,11 +88,19 @@ const Home = () => {
         </div>
       )}
 
-      <div className="page-header">
-        <h2 className="page-title">Top Stories</h2>
-        <button className="btn btn-primary btn-sm" onClick={handleScrape} disabled={scraping || loading}>
-          <RefreshCw size={14} className={scraping ? 'spin' : ''} />
-          {scraping ? 'Scraping...' : 'Refresh'}
+      <div className="page-header" style={{ marginBottom: '2rem' }}>
+        <div>
+          <h1 style={{ fontSize: '2.5rem', letterSpacing: '-0.04em', marginBottom: '0.25rem' }}>Top Stories</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>Curated tech news from around the web</p>
+        </div>
+        <button 
+          className="btn btn-primary" 
+          onClick={handleScrape} 
+          disabled={scraping || loading}
+          style={{ padding: '0.75rem 1.5rem', borderRadius: 'var(--radius-md)' }}
+        >
+          <RefreshCw size={18} className={scraping ? 'spin' : ''} />
+          {scraping ? 'Refreshing...' : 'Refresh Feed'}
         </button>
       </div>
 
