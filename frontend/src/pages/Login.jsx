@@ -22,7 +22,7 @@ const Login = () => {
     try {
       setLoading(true);
       setError('');
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { username, password });
       login(data);
       addToast(`👋 Welcome back, ${data.username}!`, 'success');
       navigate('/');

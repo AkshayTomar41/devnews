@@ -32,7 +32,7 @@ const Profile = () => {
 
     const fetchStats = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/auth/stats', {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/stats`, {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         setStats(data);
@@ -45,7 +45,7 @@ const Profile = () => {
     setSaving(true);
     try {
       const { data } = await axios.put(
-        'http://localhost:5000/api/auth/profile',
+        `${import.meta.env.VITE_API_URL}/api/auth/profile`,
         { bio, avatarColor, fullName },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );

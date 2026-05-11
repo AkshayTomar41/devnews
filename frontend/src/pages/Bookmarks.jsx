@@ -16,7 +16,7 @@ const Bookmarks = () => {
     const fetchBookmarks = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get('http://localhost:5000/api/stories?limit=500');
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/stories?limit=500`);
         const ids = user.bookmarks?.map(id => id?.toString?.() || id) || [];
         const filtered = data.stories.filter(s => ids.includes(s._id?.toString()));
         setBookmarkedStories(filtered);

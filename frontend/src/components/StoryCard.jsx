@@ -30,7 +30,7 @@ const StoryCard = ({ story, onVoteUpdate }) => {
     setBookmarkLoading(true);
     try {
       const { data } = await axios.post(
-        `http://localhost:5000/api/stories/${story._id}/bookmark`, {}, authConfig()
+        `${import.meta.env.VITE_API_URL}/api/stories/${story._id}/bookmark`, {}, authConfig()
       );
       updateBookmarks(data.bookmarkedIds);
       addToast(data.isBookmarked ? '📌 Story bookmarked!' : 'Bookmark removed', data.isBookmarked ? 'success' : 'info');
@@ -47,7 +47,7 @@ const StoryCard = ({ story, onVoteUpdate }) => {
     setVoteLoading(true);
     try {
       const { data } = await axios.post(
-        `http://localhost:5000/api/stories/${story._id}/vote`, {}, authConfig()
+        `${import.meta.env.VITE_API_URL}/api/stories/${story._id}/vote`, {}, authConfig()
       );
       setLocalPoints(data.points);
       setVoted(data.voted);

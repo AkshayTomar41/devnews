@@ -31,7 +31,7 @@ const Home = () => {
 
   const fetchStats = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/stories/stats');
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/stories/stats`);
       setStats(data);
     } catch { /* ignore */ }
   };
@@ -41,7 +41,7 @@ const Home = () => {
     try {
       const params = new URLSearchParams({ page: p, limit: 10, sort, type: typeFilter });
       if (debouncedSearch) params.append('q', debouncedSearch);
-      const { data } = await axios.get(`http://localhost:5000/api/stories?${params}`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/stories?${params}`);
       setStories(data.stories);
       setTotalPages(data.pages);
       setPage(data.page);
@@ -59,7 +59,7 @@ const Home = () => {
   const handleScrape = async () => {
     setScraping(true);
     try {
-      await axios.post('http://localhost:5000/api/scrape');
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/scrape`);
       addToast('✅ Stories refreshed from HackerNews!', 'success');
       await fetchStories(1);
       await fetchStats();

@@ -23,8 +23,8 @@ const StoryDetail = () => {
     const fetchData = async () => {
       try {
         const [storyRes, commentsRes] = await Promise.all([
-          axios.get(`http://localhost:5000/api/stories/${id}`),
-          axios.get(`http://localhost:5000/api/stories/${id}/comments`)
+          axios.get(`${import.meta.env.VITE_API_URL}/api/stories/${id}`),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/stories/${id}/comments`)
         ]);
         setStory(storyRes.data);
         setComments(commentsRes.data);
@@ -45,7 +45,7 @@ const StoryDetail = () => {
     setSubmitting(true);
     try {
       const { data } = await axios.post(
-        `http://localhost:5000/api/stories/${id}/comments`,
+        `${import.meta.env.VITE_API_URL}/api/stories/${id}/comments`,
         { text: commentText },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -62,7 +62,7 @@ const StoryDetail = () => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/comments/${commentId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/comments/${commentId}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setComments(prev => prev.filter(c => c._id !== commentId));
